@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+      <title>GIF 채팅방</title>
+   </head>
+   <body>
+      <div>F12를 눌러 console 탭과 network 탭을 확인하세요.</div>
+
+      <!-- 익스프레스 서버와 소켓 서버가 연결이 되면, 소켓IO 서버에서 js파일을 넣어준다 -->
+      <script src="/socket.io/socket.io.js"></script>
+      <script>
+         // 위의 socket.io.js에서 뽑아 쓴다.
+         const socket = io.connect('http://localhost:3000', {
+            path: '/socket.io', // 서버 path와 일치시켜준다
+            //transports: ['websocket'] // polling 시도하지말고 바로 웹소켓으로 하려면 설정
+         });
+
+         socket.on('news', function (data) {
+            console.log(data);
+
+            socket.emit('reply', 'Hello Node.JS');
+         });   
+         
+         function sendMsg() {
+          const msg = {
+            userId: document.getElementById("userId").value,
+            msg: document.getElementById("msg").value
+          }
+          document.getElementById("msg").value = "";
+          if(msg.userId == "") {alert("id is not null"); return;}
+          if(msg.msg == "") {return;}
+          socket.emit("msg", JSON.stringify(msg));
+          console.log(msg);
+         }
+      </script>
+      <form action="javascript:sendMsg()">
+        userId: <input type="text" id="userId"/><br>
+        message: <input msg="message" type="text" id="msg"/><br>
+        <input type="submit">
+      </form>
+   </body>
+</html>
