@@ -5,18 +5,15 @@ const { timeStamp, timeLog } = require("console");
 const SocketIO = require("socket.io");
 const io = SocketIO(server, {path:"/socket.io"});
 
-const time = new Date();
-const timenow = `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`;
-
 app.get("/", (req,res)=>{
     res.sendFile(__dirname+"/index.html")
-})
+});
 
 io.on("connection", (socket)=>{
     const req = socket.request;
 
     const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
-    console.log("new Client Connected", ip, socket.id, req.ip);
+    console.log("new Client Connected", ip, socket.id);
 
     socket.on("disconnect", ()=>{
         console.log('Client is Disconnected', ip, socket.id);
@@ -31,16 +28,17 @@ io.on("connection", (socket)=>{
         console.log(data);
     });
 
-    socket.on("msg", (msg)=>{
-        msg = JSON.parse(msg);
-        console.log(timenow);
+    socket.on("msg", (rawMsg)=>{
+        msg = JSON.parse(rawMsg);
+        console.log("time: "+msg.time);
         console.log("ID: "+msg.userId);
         console.log("message: "+msg.msg);
         console.log("---------------");
-    })
+        socket.broadcast.emit("msg", rawMsg);
+    });
     
     socket.interval = setInterval(()=>{
         socket.emit("news", "Hello Socket.IO");
-    }, 10000);
+    }, 20000);
     
-})
+});
