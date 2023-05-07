@@ -30,15 +30,12 @@ io.on("connection", (socket)=>{
 
     socket.on("msg", (rawMsg)=>{
         msg = JSON.parse(rawMsg);
-        console.log("time: "+msg.time);
-        console.log("ID: "+msg.userId);
-        console.log("message: "+msg.msg);
-        console.log("---------------");
+        console.log(`[${msg.time}]${msg.userId}: ${msg.msg}`);
         socket.broadcast.emit("msg", rawMsg);
     });
     
     socket.interval = setInterval(()=>{
         socket.emit("news", "Hello Socket.IO");
-    }, 20000);
+    }, 50000);
     
 });

@@ -3,6 +3,15 @@
    <head>
       <meta charset="UTF-8">
       <title>wed-chat</title>
+      <style>
+        div{
+            width: 300px; height: 600px; 
+            background-color: rgb(204, 251, 255);
+            border: 2px solid black;
+            text-align: left;
+        }
+        span{color: rgb(19, 77, 97); word-break: break-all;}
+      </style>
    </head>
    <body>
       <script src="/socket.io/socket.io.js"></script>
@@ -20,14 +29,14 @@
          function MessageLog(msg) { 
             msgLog.push(msg);
             const result = msgLog.map(element=>
-            `[${element.time}]${element.userId}: ${element.msg}\n`
+            `[${element.time}]${element.userId}: ${element.msg}<br>`
             );
             const log = result.toString().replaceAll(",","");
             return log;
         };
           
         function printLog(log) {
-            document.getElementById("result").innerText = log;
+            document.getElementById("result").innerHTML = `<span>${log}</span>`;
         };
 
         socket.on("msg", (rawMsg)=>{
