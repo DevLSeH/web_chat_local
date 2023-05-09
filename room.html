@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-   <head>
+    <head>
       <meta charset="UTF-8">
       <title>wed-chat</title>
       <style>
@@ -12,8 +12,8 @@
         }
         span{color: rgb(19, 77, 97); word-break: break-all;}
       </style>
-   </head>
-   <body>
+    </head>
+    <body>
       <script src="/socket.io/socket.io.js"></script>
       <script>
         const socket = io.connect(window.location.href, {
@@ -65,5 +65,5 @@
         <button type="button" onclick="window.location.href = 'http://localhost:3000/'">로비로 가기</button>
       </form>
       <div id="result"></div>
-   </body>
+    </body>
 </html>
