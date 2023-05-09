@@ -25,25 +25,18 @@
             socket.emit('reply', 'Hello Node.JS');
          });   
 
-         const msgLog = [];
-         function MessageLog(msg) { 
-            msgLog.push(msg);
-            const result = msgLog.map(element=>
-            `[${element.time}]${element.userId}: ${element.msg}<br>`
-            );
-            const log = result.toString().replaceAll(",","");
-            return log;
+         function MessageLog(msgLog) { 
+            const result =msgLog.map(msg=>`<span>[${msg['time']}]${msg['userId']}:${msg['msg']}</span><br>`);
+            return result;
         };
           
-        function printLog(log) {
-            document.getElementById("result").innerHTML = `<span>${log}</span>`;
+        function printLog(msgLog) {
+            document.getElementById("result").innerHTML = "";
+            msgLog.map(log=> (document.getElementById("result").innerHTML += log));
         };
 
-        socket.on("msg", (rawMsg)=>{
-            const msg = JSON.parse(rawMsg);
-            console.log(`[${msg.time}]${msg.userId}: ${msg.msg}`);
-            printLog(MessageLog(msg));
-          
+        socket.on("msg", (msgLog)=>{
+            printLog(MessageLog(msgLog));
         })
 
         function time() {
@@ -53,18 +46,16 @@
         };
         function sendMsg() {
             const msg = {
-                time: time(),
-                userId: document.getElementById("userId").value,
-                msg: document.getElementById("msg").value
+                'time': `${time()}`,
+                'userId': `${document.getElementById("userId").value}`,
+                'msg': `${document.getElementById("msg").value}`
             };
             document.getElementById("msg").value = "";
             if(msg.userId == "") {alert("id is not null"); return;}
             if(msg.msg == "") {return;}
-            console.log(`[${msg.time}]${msg.userId}: ${msg.msg}`);
-
-            printLog(MessageLog(msg));
+            console.log(`[${msg['time']}]${msg['userId']}: ${msg['msg']}`);
           
-            socket.emit("msg", JSON.stringify(msg));
+            socket.emit("msg", (msg));
         }
       </script>
       <form action="javascript:sendMsg()">
