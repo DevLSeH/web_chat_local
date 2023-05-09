@@ -25,7 +25,7 @@ function createRoom(roomName){
   mainCount += 1;
   rooms[localCount] = new messages(name);
   const msgLog = rooms[localCount].msgLog;
-  
+
   room.on("connection", (socket)=>{
     const req = socket.request;
     
@@ -63,20 +63,25 @@ function createRoom(roomName){
 }
 
 const lobby = io.of("/");
+let nameSpace = [];
 app.get("/", (req,res)=>{
   res.sendFile(__dirname+"/lobby.html");
 })
 lobby.on("connection", (socket)=>{
   console.log("lobby connected");
   
-  socket.on("create", (rawRoomInfo)=>{
-  const roomInfo = JSON.parse(rawRoomInfo);
-  const roomName = roomInfo.roomName;
+  socket.on("create", (roomInfo)=>{
+  const roomName = roomInfo['roomName'];
+  if(nameSpace.includes(roomName)){
+    console.log("join room"+roomName);
+    socket.emit("created", roomName);
+    return;
+  }
+  nameSpace.push(roomName);
   console.log("create room :"+roomName);
   createRoom(roomName);
   socket.emit("created", roomName);
 })
 })
     
-
 createRoom("hi");

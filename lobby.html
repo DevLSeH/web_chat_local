@@ -13,23 +13,28 @@
 
          async function createRoom() {
             const roomInfo = {
-                roomName: document.getElementById("roomName").value
+                'roomName': document.getElementById("roomName").value,
             }
             document.getElementById("roomName").value = "";
             if(roomInfo.roomName==""){alert("생성할 방 이름을 입력해주세요"); return;};
             console.log("create room :"+roomInfo.roomName);
-            await socket.emit("create", JSON.stringify(roomInfo));
+            await socket.emit("create", (roomInfo));
          }
 
          socket.on("created", (roomName)=>{
-            const roomUrl = "http://localhost:3000/"+roomName;
-            window.location.replace(roomUrl);
+            moveRoom(roomName);
          })
+        
+         function moveRoom(roomName){
+          const roomUrl = "http://localhost:3000/"+roomName;
+          window.location.replace(roomUrl);
+         }
 
         </script>
         <form action="javascript:createRoom()">
             room name: <input type="text" id="roomName" placeholder="room name"/><br>
-            <input type="submit" value="채팅방 만들기"/>
+            <input type="submit" value="채팅방 참여하기"></button>
+            <!--<button type="button" onclick="moveRoom(document.getElementById('roomName').value)">채팅방 참여하기</button>-->
         </form>
     </body>
 </html>
