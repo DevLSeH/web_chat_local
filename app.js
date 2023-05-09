@@ -1,7 +1,5 @@
 const app = require("express")();
 const server = app.listen(3000, () => {});
-
-const { timeStamp, timeLog } = require("console");
 const SocketIO = require("socket.io");
 const io = SocketIO(server, {path:"/socket.io"});
 
@@ -9,6 +7,7 @@ function messages(roomName){
   this.roomName = roomName;
   this.msgLog = [];
 }
+
 let mainCount = 0;
 const rooms = [];
 function createRoom(roomName){
@@ -16,7 +15,6 @@ function createRoom(roomName){
   const path = "/"+name;
   const room= io.of(path);
   
-
   app.get(path, (req,res)=>{
       res.sendFile(__dirname+"/room.html")
   });
@@ -34,9 +32,12 @@ function createRoom(roomName){
 
     socket.emit("msg", msgLog);
 
-    socket.on("disconnect", ()=>{
-        console.log('Client is Disconnected', ip, socket.id);
-        clearInterval(socket.interval);
+    socket.on("msg", (msg)=>{
+      console.log(`[${msg['time']}]${msg['userId']}: ${msg['msg']}`);
+      msgLog.push(msg);
+      socket.emit("msg",msgLog);
+      socket.broadcast.emit("msg", msgLog);
+      console.log(msgLog);
     });
 
     socket.on("error", (error)=>{
@@ -46,19 +47,15 @@ function createRoom(roomName){
     socket.on("reply", (data)=>{
         console.log(data);
     });
-
-    socket.on("msg", (msg)=>{
-        console.log(`[${msg['time']}]${msg['userId']}: ${msg['msg']}`);
-        msgLog.push(msg);
-        socket.emit("msg",msgLog);
-        socket.broadcast.emit("msg", msgLog);
-        console.log(msgLog);
-    });
     
     socket.interval = setInterval(()=>{
         socket.emit("news", "Hello Socket.IO");
     }, 50000);
-      
+
+    socket.on("disconnect", ()=>{
+      console.log('Client is Disconnected', ip, socket.id);
+      clearInterval(socket.interval);
+    });
   });
 }
 
@@ -84,4 +81,4 @@ lobby.on("connection", (socket)=>{
 })
 })
     
-createRoom("hi");
+createRoom("default");

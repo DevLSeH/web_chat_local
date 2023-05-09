@@ -16,47 +16,47 @@
    <body>
       <script src="/socket.io/socket.io.js"></script>
       <script>
-         const socket = io.connect(window.location.href, {
-            path: '/socket.io',
-         });
+        const socket = io.connect(window.location.href, {
+          path: '/socket.io',
+        });
 
-         socket.on('news', function (data) {
-            console.log(data);
-            socket.emit('reply', 'Hello Node.JS');
-         });   
+        socket.on('news', function (data) {
+          console.log(data);
+          socket.emit('reply', 'Hello Node.JS');
+        });   
 
-         function MessageLog(msgLog) { 
-            const result =msgLog.map(msg=>`<span>[${msg['time']}]${msg['userId']}:${msg['msg']}</span><br>`);
-            return result;
+        function MessageLog(msgLog) { 
+          const result =msgLog.map(msg=>`<span>[${msg['time']}]${msg['userId']}:${msg['msg']}</span><br>`);
+          return result;
         };
-          
+        
         function printLog(msgLog) {
-            document.getElementById("result").innerHTML = "";
-            msgLog.map(log=> (document.getElementById("result").innerHTML += log));
+          document.getElementById("result").innerHTML = "";
+          msgLog.map(log=> (document.getElementById("result").innerHTML += log));
         };
 
         socket.on("msg", (msgLog)=>{
-            printLog(MessageLog(msgLog));
-        })
+          printLog(MessageLog(msgLog));
+        });
 
         function time() {
-            const timeNow = 
-            `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`;
-            return timeNow;
+          const timeNow = 
+          `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`;
+          return timeNow;
         };
         function sendMsg() {
-            const msg = {
-                'time': `${time()}`,
-                'userId': `${document.getElementById("userId").value}`,
-                'msg': `${document.getElementById("msg").value}`
-            };
-            document.getElementById("msg").value = "";
-            if(msg.userId == "") {alert("id is not null"); return;}
-            if(msg.msg == "") {return;}
-            console.log(`[${msg['time']}]${msg['userId']}: ${msg['msg']}`);
-          
-            socket.emit("msg", (msg));
-        }
+          const msg = {
+              'time': `${time()}`,
+              'userId': `${document.getElementById("userId").value}`,
+              'msg': `${document.getElementById("msg").value}`
+          };
+          document.getElementById("msg").value = "";
+          if(msg.userId == "") {alert("userId는 필수입니다"); return;}
+          if(msg.msg == "") {return;}
+          console.log(`[${msg['time']}]${msg['userId']}: ${msg['msg']}`);
+        
+          socket.emit("msg", (msg));
+        };
       </script>
       <form action="javascript:sendMsg()">
         userId: <input type="text" id="userId" placeholder="user id"/><br>
