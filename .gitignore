@@ -1,0 +1,4 @@
+*.lock
+Dockerfile
+package-lock.json
+*.env
