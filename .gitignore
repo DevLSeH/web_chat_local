@@ -2,3 +2,4 @@
 Dockerfile
 package-lock.json
 *.env
+*.log
