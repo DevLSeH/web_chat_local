@@ -2,7 +2,6 @@ const app = require("express")();
 const server = app.listen(3000, () => {});
 const SocketIO = require("socket.io");
 const io = SocketIO(server, {path:"/socket.io"});
-console.log("hi");
 
 function messages(roomName){
   this.roomName = roomName;
